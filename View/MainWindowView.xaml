@@ -6,8 +6,13 @@
         xmlns:viewModel="clr-namespace:PwdGen.ViewModel"
         Icon="../mainicon.ico"
         Style="{StaticResource VS2012WindowStyle}" 
-        >
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity">
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding FormLoaded}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <Window.DataContext>
         <viewModel:MainWindowViewModel/>
@@ -38,10 +43,11 @@
 
             <TabItem Header="Настройки">
                 <StackPanel Margin="9">
-                    <CheckBox Margin="3" Content="Включить инициализацию" />
-                    <CheckBox Margin="3" Content="Включить принтер" />
-                    <ComboBox Width="169" Margin="3"></ComboBox>
-                    <ComboBox Width="169" Margin="3"></ComboBox>
+                    <CheckBox Margin="3" Content="Включить инициализацию" IsChecked="{Binding IsSelectedInitEToken}" />
+
+                    <CheckBox Margin="3" Content="Включить принтер" IsChecked="{Binding IsSelectedPrinter}" />
+                    <ComboBox Width="169" Margin="3" IsEnabled="{Binding IsSelectedPrinter}" ></ComboBox>
+                    <ComboBox Width="169" Margin="3" IsEnabled="{Binding IsSelectedPrinter}" ></ComboBox>
                 </StackPanel>
             </TabItem>
 
