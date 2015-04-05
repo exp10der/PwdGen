@@ -1,5 +1,4 @@
-﻿
-namespace PwdGen.Model
+﻿namespace PwdGen.Model
 {
     class Container
     {

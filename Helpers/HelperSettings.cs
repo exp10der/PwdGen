@@ -1,6 +1,4 @@
-﻿
-
-using System.Text;
+﻿using System.Text;
 using IniParser;
 using IniParser.Model;
 
@@ -12,7 +10,7 @@ namespace PwdGen.Helpers
     }
     static public class HelperSettings
     {
-
+        // TODO Дока по этой библиотеке https://github.com/rickyah/ini-parser
         public const string PathConfigurationFile = "config.ini";
         public static State InitEToken
         {
@@ -58,6 +56,4 @@ namespace PwdGen.Helpers
             parser.WriteFile("config.ini", data, Encoding.UTF8);
         }
     }
-
-
 }

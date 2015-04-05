@@ -1,11 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Navigation;
-using IniParser;
-using IniParser.Model;
 using PwdGen.Helpers;
 using PwdGen.Infrastructure;
 using PwdGen.Model;
@@ -14,7 +9,48 @@ namespace PwdGen.ViewModel
 {
     class MainWindowViewModel : ViewModelBase
     {
-       
+        /// <summary>
+        /// Служебный класс для генерации паролей даты айди
+        /// </summary>
+        private readonly HelperGenerator _helper = new HelperGenerator();
+        
+
+        /// <summary>
+        /// Последний контейнер для УЦ3
+        /// </summary>
+        private Container _currentContainerUc3;
+        public Container CurrentContainerUc3
+        {
+            get
+            {
+                return _currentContainerUc3; 
+            }
+            set
+            {
+                _currentContainerUc3 = value;
+                OnPropertyChanged("CurrentContainerUc3");
+            }
+        }
+
+
+        /// <summary>
+        /// Последний контейнер для УЦ1
+        /// </summary>
+        private Container _currentContainerUc1;
+        public Container CurrentContainerUc1
+        {
+            get
+            {
+                return _currentContainerUc1;
+            }
+            set
+            {
+                _currentContainerUc1 = value;
+                OnPropertyChanged("CurrentContainerUc1");
+            }
+        }
+
+
         private bool _isSelectedInitEToken;
         /// <summary>
         /// Свойство Включенна ли Инициализация юсб ключа
@@ -31,6 +67,7 @@ namespace PwdGen.ViewModel
                 if (_isSelectedInitEToken == value)
                     return;
                 HelperSettings.InitEToken = value ? State.On : State.Off;
+                OnPropertyChanged("IsSelectedInitEToken");
             }
         }
 
@@ -54,6 +91,16 @@ namespace PwdGen.ViewModel
             }
         }
 
+        /// <summary>
+        /// Список принтеров TODO НИРАБОТАЕТ((( ПОЧИНИ МЕНЯ!
+        /// </summary>
+        public IEnumerable<string> PrintersEnumerable
+        {
+            get
+            {
+                return HelperPrinter.SetupLabelWriterSelection();
+            }
+        }
 
 
 
@@ -62,48 +109,36 @@ namespace PwdGen.ViewModel
 
 
 
-
-        public ICommand StartCommand { get; set; }
+        public ICommand StartCommand3 { get; set; }
         public ICommand StartCommand1 { get; set; }
+
+        /// <summary>
+        /// Загрузка формы 
+        /// TODO Сюда надо будет вставить загрузку с файла xml последних айди паролей ну и да нужно разобраться когда и как удалять файлы раз в 3 дня? какой принцип
+        /// </summary>
         public ICommand FormLoaded { get; set; }
 
 
 
 
 
-        private readonly HelperGenerator _helper = new HelperGenerator();
+        
         public MainWindowViewModel()
         {
-            FormLoaded = new RelayCommand(_ =>
-            {
-                MessageBox.Show("Форма Загруженна тест!");
+            FormLoaded = new RelayCommand(_ => MessageBox.Show("Форма Загруженна тест!"));
 
+            // TODO 2 Основные команды доделать логику! Разобраться с айди и запись в файл xml
+            #region команды
+
+            StartCommand3 = new RelayCommand(_ =>
+            {
+                CurrentContainerUc3 = new Container { Pass = _helper.GetPass(), Date = _helper.GetData(), Id = Id3() }; 
             });
 
-
-            #region Ужас:)
-
-            StartCommand = new RelayCommand(_ => MessageBox.Show("Логика старта тест -> "
-                                                                 + Environment.NewLine + _helper.GetPass()
-                                                                 + Environment.NewLine + _helper.GetData()
-                                                                 + Environment.NewLine + Id3()));
-
-            StartCommand1 = new RelayCommand(_ => MessageBox.Show("Логика старта тест -> "
-                + Environment.NewLine + _helper.GetPass()
-                + Environment.NewLine + _helper.GetData()
-                + Environment.NewLine + Id1()));
-
-            //InitUsb = new RelayCommand(_ =>
-            //{
-            //    var parser = new FileIniDataParser();
-            //    IniData data = parser.ReadFile("config.ini", Encoding.UTF8);
-
-            //    // var initflag = data["Options"]["InitUsb"];
-            //    // Debug.Print(initflag + " " + initflag.GetType());
-            //    // Необходимо выпилить лишние. Так же нужно оффать команду когда будет запущен процесс с инициализацией ключа eToken
-            //    data["Options"]["InitUsb"] = data["Options"]["InitUsb"] == "true" ? "false" : "true";
-            //    parser.WriteFile("config.ini",data,Encoding.UTF8);
-            //});
+            StartCommand1 = new RelayCommand(_ =>
+            {
+                CurrentContainerUc1 = new Container {Pass = _helper.GetPass(),Date = _helper.GetData(), Id = Id1()};
+            });
 
             #endregion
 
