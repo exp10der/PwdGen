@@ -23,8 +23,8 @@
 
             <TabItem Header="УЦ3">
                 <WrapPanel Margin="9" HorizontalAlignment="Center">
-                    <Button Margin="3"  Width="100" Height="30" Content="Старт" FontSize="14"  Command="{Binding StartCommand3}" />
-                    <TextBox Width="100" Height="30" FontSize="17" Text="{Binding Path=CurrentContainerUc3.Id}"/>
+                    <Button Margin="3"  Width="100" Height="30" Content="Старт" FontSize="14"  Command="{Binding StartCommand3}" CommandParameter="{Binding ElementName=UC3, Path=Text}" />
+                    <TextBox Width="100" Name="UC3" Height="30" FontSize="17" Text="{Binding Path=CurrentContainerUc3.Id}"/>
                     <TextBox Width="100" Height="30" FontSize="17" Text="{Binding Path=CurrentContainerUc3.Pass}" />
                     <Button Content="Журнал" Width="100" Height="30" Margin="3" FontSize="14" />
                     <Label Content="READY" Margin="30" Foreground="#FF236410" FontStyle="Italic" FontWeight="Bold"/>
@@ -33,8 +33,8 @@
 
             <TabItem Header="УЦ1">
                 <WrapPanel Margin="9" HorizontalAlignment="Center">
-                    <Button Margin="3"  Width="100" Height="30" Content="Старт" FontSize="14" Command="{Binding StartCommand1}" />
-                    <TextBox Width="100" Height="30" FontSize="17" Text="{Binding Path=CurrentContainerUc1.Id}" />
+                    <Button Margin="3"  Width="100" Height="30" Content="Старт" FontSize="14" Command="{Binding StartCommand1}" CommandParameter="{Binding ElementName=UC1, Path=Text}" />
+                    <TextBox Width="100" Name="UC1" Height="30" FontSize="17" Text="{Binding Path=CurrentContainerUc1.Id}" />
                     <TextBox Width="100" Height="30" FontSize="17" Text="{Binding Path=CurrentContainerUc1.Pass}" />
                     <Button Content="Журнал" Width="100" Height="30" Margin="3" FontSize="14"   />
                     <Label Content="READY" Margin="30" Foreground="#FF236410" FontStyle="Italic" FontWeight="Bold" />

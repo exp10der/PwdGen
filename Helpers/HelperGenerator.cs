@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -6,6 +7,10 @@ namespace PwdGen.Helpers
 {
     class HelperGenerator
     {
+        // Если файлов нету то стартуем с этих значений
+        // TODO : Уточнить дефолтныйе номера у Владимира
+        private static string IdDefaultUc1 = "СЗ-0000";
+        private static string IdDefaultUc3 = "СЗИ-0000";
 
         // TODO : Это вроде можно оставить
         #region Password
@@ -66,10 +71,35 @@ namespace PwdGen.Helpers
             return DateTime.Today.ToShortDateString();
         }
 
-        public string GetId([CallerMemberName]string id = "")
+        // Может стоит сделать конструктор если файла xml нету то ставим дефолт 
+        // А текущии значения брать через свойства?
+        // А может лучше передать сам объект куррентУц1 или Уц3?
+        // Потом необходимо будет сделать рефактор ----
+        public string GetId(string currentId)
         {
+            #region Инфа потом можно делит
             // TODO Примерные типы айди СЗ-0005(уц1) и СЗИ-0002(это уц3) необходимо уточнить формат у товарища Владимира
-            return id;
+            //Константин
+            //ей если файлов нету xml то на УЦ1 айди СЗ-0000
+            //а на УЦ3 СЗИ-0000 ?
+            //Владимир
+            //ахуеть+
+            //Константин
+            //т.е не с СЗ-0001?
+            //а именно 0000 четрые нуля
+            //Владимир
+            //-
+            //+
+            //Константин
+            //ок заебись
+            #endregion
+
+            // Если файлов нету то начинаем с дефолтных айди
+            if (currentId == "UC3" || currentId == "UC1")
+                return currentId == "UC3" ? IdDefaultUc3 : IdDefaultUc1;
+
+            var tmp = currentId.Split('-').Select((n, i) => i == 1 ? string.Format("{0:0000}", Convert.ToInt32(n)+1) : n).ToArray();
+            return tmp[0] + "-" + tmp[1];
         }
     }
 }

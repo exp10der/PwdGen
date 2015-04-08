@@ -130,29 +130,24 @@ namespace PwdGen.ViewModel
             // TODO 2 Основные команды доделать логику! Разобраться с айди и запись в файл xml
             #region команды
 
-            StartCommand3 = new RelayCommand(_ =>
+            StartCommand3 = new RelayCommand(numberUc =>
             {
-                CurrentContainerUc3 = new Container { Pass = _helper.GetPass(), Date = _helper.GetData(), Id = Id3() }; 
+                if (string.IsNullOrEmpty(numberUc.ToString()))
+                     numberUc = "UC3";
+               
+                CurrentContainerUc3 = new Container { Pass = _helper.GetPass(), Date = _helper.GetData(),Id  = _helper.GetId(numberUc.ToString())}; 
             });
 
-            StartCommand1 = new RelayCommand(_ =>
+            StartCommand1 = new RelayCommand(numberUc =>
             {
-                CurrentContainerUc1 = new Container {Pass = _helper.GetPass(),Date = _helper.GetData(), Id = Id1()};
+                if (string.IsNullOrEmpty(numberUc.ToString()))
+                    numberUc = "UC1";
+
+                CurrentContainerUc1 = new Container { Pass = _helper.GetPass(), Date = _helper.GetData(), Id = _helper.GetId(numberUc.ToString()) };
             });
 
             #endregion
 
         }
-
-        string Id3()
-        {
-            return _helper.GetId();
-        }
-
-        string Id1()
-        {
-            return _helper.GetId();
-        }
-
     }
 }
