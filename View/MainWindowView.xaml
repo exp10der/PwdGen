@@ -4,7 +4,7 @@
         Title="Генератор паролей" Height="192" Width="351"
         xmlns:local="clr-namespace:PwdGen.ViewModel"
         Icon="../mainicon.ico"
-        Style="{StaticResource VS2012WindowStyle}" 
+        Style="{StaticResource VS2012WindowStyle}"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity">
 
     <i:Interaction.Triggers>
@@ -14,7 +14,7 @@
     </i:Interaction.Triggers>
 
     <Window.DataContext>
-        <local:MainWindowViewModel/>
+        <local:MainWindowViewModel />
     </Window.DataContext>
 
     <Grid>
@@ -23,20 +23,24 @@
 
             <TabItem Header="УЦ3">
                 <WrapPanel Margin="9" HorizontalAlignment="Center">
-                    <Button Margin="3"  Width="100" Height="30" Content="Старт" FontSize="14"  Command="{Binding StartCommand3}" CommandParameter="{Binding ElementName=UC3, Path=Text}" />
-                    <TextBox Width="100" Name="UC3" Height="30" FontSize="17" Text="{Binding Path=CurrentContainerUc3.Id}"/>
+                    <Button Margin="3" Width="100" Height="30" Content="Старт" FontSize="14"
+                            Command="{Binding StartCommand3}" CommandParameter="{Binding ElementName=UC3, Path=Text}" />
+                    <TextBox Width="100" Name="UC3" Height="30" FontSize="17"
+                             Text="{Binding Path=CurrentContainerUc3.Id}" />
                     <TextBox Width="100" Height="30" FontSize="17" Text="{Binding Path=CurrentContainerUc3.Pass}" />
                     <Button Content="Журнал" Width="100" Height="30" Margin="3" FontSize="14" />
-                    <Label Content="READY" Margin="30" Foreground="#FF236410" FontStyle="Italic" FontWeight="Bold"/>
+                    <Label Content="READY" Margin="30" Foreground="#FF236410" FontStyle="Italic" FontWeight="Bold" />
                 </WrapPanel>
             </TabItem>
 
             <TabItem Header="УЦ1">
                 <WrapPanel Margin="9" HorizontalAlignment="Center">
-                    <Button Margin="3"  Width="100" Height="30" Content="Старт" FontSize="14" Command="{Binding StartCommand1}" CommandParameter="{Binding ElementName=UC1, Path=Text}" />
-                    <TextBox Width="100" Name="UC1" Height="30" FontSize="17" Text="{Binding Path=CurrentContainerUc1.Id}" />
+                    <Button Margin="3" Width="100" Height="30" Content="Старт" FontSize="14"
+                            Command="{Binding StartCommand1}" CommandParameter="{Binding ElementName=UC1, Path=Text}" />
+                    <TextBox Width="100" Name="UC1" Height="30" FontSize="17"
+                             Text="{Binding Path=CurrentContainerUc1.Id}" />
                     <TextBox Width="100" Height="30" FontSize="17" Text="{Binding Path=CurrentContainerUc1.Pass}" />
-                    <Button Content="Журнал" Width="100" Height="30" Margin="3" FontSize="14"   />
+                    <Button Content="Журнал" Width="100" Height="30" Margin="3" FontSize="14" />
                     <Label Content="READY" Margin="30" Foreground="#FF236410" FontStyle="Italic" FontWeight="Bold" />
                 </WrapPanel>
             </TabItem>
@@ -45,7 +49,8 @@
                 <StackPanel Margin="9">
                     <CheckBox Margin="3" Content="Включить инициализацию" IsChecked="{Binding IsSelectedInitEToken}" />
                     <CheckBox Margin="3" Content="Включить принтер" IsChecked="{Binding IsSelectedPrinter}" />
-                    <ComboBox Width="169" Margin="3" IsEnabled="{Binding IsSelectedPrinter}" ItemsSource="{Binding PrintersEnumerable}" />
+                    <ComboBox Width="169" Margin="3" IsEnabled="{Binding IsSelectedPrinter}"
+                              ItemsSource="{Binding PrintersEnumerable}" />
                     <ComboBox Width="169" Margin="3" IsEnabled="{Binding IsSelectedPrinter}" />
                 </StackPanel>
             </TabItem>
@@ -53,8 +58,8 @@
             <TabItem Header="Исключения">
                 <Grid Margin="9">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="2*" />
                     </Grid.ColumnDefinitions>
 
                     <StackPanel VerticalAlignment="Center">
@@ -62,7 +67,7 @@
                         <Button Margin="5" Content="Просмотр"></Button>
                     </StackPanel>
                     <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                        <Label Content="Перечень ключей оператора"/>
+                        <Label Content="Перечень ключей оператора" />
                         <Label></Label>
                     </StackPanel>
                 </Grid>
