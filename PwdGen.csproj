@@ -72,9 +72,13 @@
     </ApplicationDefinition>
     <Compile Include="Helpers\HelperPrinter.cs" />
     <Compile Include="Helpers\HelperSettings.cs" />
+    <Compile Include="Infrastructure\IFileManager.cs" />
+    <Compile Include="Infrastructure\IMessageServicecs.cs" />
     <Compile Include="Model\Container.cs" />
     <Compile Include="Helpers\HelperGenerator.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
+    <Compile Include="Model\FileManager.cs" />
+    <Compile Include="Model\MessageServicece.cs" />
     <Compile Include="Skins\VS2012WindowStyle.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Page Include="View\MainWindowView.xaml">
@@ -113,7 +117,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="LICENSE" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
