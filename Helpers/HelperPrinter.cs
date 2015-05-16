@@ -1,43 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 using DYMO.Label.Framework;
+using PwdGen.Infrastructure;
+using PwdGen.Model;
 
 namespace PwdGen.Helpers
 {
     class HelperPrinter
     {
 
+       static IMessageService message= new MessageServicece();
         private static ILabel _label;
 
-        // TODO : В общем курить мануалы http://www.labelwriter.com/software/dls/sdk/docs/DYMOLabelFrameworkdotNETHelp/Index.html жесть на поиски доки тупо убил минут 30
+        // TODO : документация http://www.labelwriter.com/software/dls/sdk/docs/DYMOLabelFrameworkdotNETHelp/Index.html
 
         // выбор принтера
         static public IEnumerable<string> SetupLabelWriterSelection()
         {
-#if !DEBUG 
             try
             {
-                // TODO : Гребаные дрова тупо вылетает :(
-                var printers = Framework.GetPrinters().Select(printer => printer.Name);
+                return Framework.GetPrinters().Select(printer => printer.Name);
             }
             catch (Exception)
             {
-
-                MessageBox.Show("GG");
+                message.ShowError("Обнаружена ошибка при обращении к драйверам DYMO. \nПереустановите или Обновите ПО для принтера DYMO");
             }
-#endif
-
-
-            //_label = Framework.Open("test.label");
-
-            // IEnumerable<string> printers = new[] { "хуевый", "принтер" };
-
-            return new[] { "хуевый", "принтер", "как пофиксить sdk" };
-
+            return null;
         }
-
         //выбор принтера
         //public void SetupLabelWriterSelection()
         //{
@@ -89,7 +79,5 @@ namespace PwdGen.Helpers
         //    ObjectNameCmb.IsEnabled = ObjectNameCmb.Items.Count > 0;
         //    PassBox.IsEnabled = ObjectNameCmb.Items.Count > 0 && !string.IsNullOrEmpty(ObjectNameCmb.Text);
         //}
-
-
     }
 }

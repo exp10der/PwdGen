@@ -1,11 +1,13 @@
-﻿<Window x:Class="PwdGen.View.MainWindowView"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Генератор паролей" Height="192" Width="351"
         xmlns:local="clr-namespace:PwdGen.ViewModel"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="PwdGen.View.MainWindowView"
+        Title="Генератор" Height="192" Width="351"
         Icon="../mainicon.ico"
+        ResizeMode="NoResize"
         Style="{StaticResource VS2012WindowStyle}"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity">
+        >
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -18,40 +20,44 @@
     </Window.DataContext>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="24"/>
+        </Grid.RowDefinitions>
 
-        <TabControl>
+        <TabControl Grid.Row="0" >
 
             <TabItem Header="УЦ3">
                 <WrapPanel Margin="9" HorizontalAlignment="Center">
                     <Button Margin="3" Width="100" Height="30" Content="Старт" FontSize="14"
-                            Command="{Binding StartCommand3}" CommandParameter="{Binding ElementName=UC3, Path=Text}" />
-                    <TextBox Width="100" Name="UC3" Height="30" FontSize="17"
-                             Text="{Binding Path=CurrentContainerUc3.Id}" />
-                    <TextBox Width="100" Height="30" FontSize="17" Text="{Binding Path=CurrentContainerUc3.Pass}" />
+						Command="{Binding StartUc3}" CommandParameter="{Binding Text, ElementName=UC3}" />
+                    <TextBox Width="100" x:Name="UC3" Height="30" FontSize="17"
+						Text="{Binding CurrentContainerUc3.Id}" />
+                    <TextBox Width="100" Height="30" FontSize="17" Text="{Binding CurrentContainerUc3.Pass}" />
                     <Button Content="Журнал" Width="100" Height="30" Margin="3" FontSize="14" />
-                    <Label Content="READY" Margin="30" Foreground="#FF236410" FontStyle="Italic" FontWeight="Bold" />
+                    <Label Content="READY" Margin="0" Foreground="#FF236410" FontStyle="Italic" FontWeight="Bold"  />
                 </WrapPanel>
             </TabItem>
 
             <TabItem Header="УЦ1">
                 <WrapPanel Margin="9" HorizontalAlignment="Center">
                     <Button Margin="3" Width="100" Height="30" Content="Старт" FontSize="14"
-                            Command="{Binding StartCommand1}" CommandParameter="{Binding ElementName=UC1, Path=Text}" />
-                    <TextBox Width="100" Name="UC1" Height="30" FontSize="17"
-                             Text="{Binding Path=CurrentContainerUc1.Id}" />
-                    <TextBox Width="100" Height="30" FontSize="17" Text="{Binding Path=CurrentContainerUc1.Pass}" />
+						Command="{Binding StartUc1}" CommandParameter="{Binding Text, ElementName=UC1}" />
+                    <TextBox Width="100" x:Name="UC1" Height="30" FontSize="17"
+						Text="{Binding CurrentContainerUc1.Id}" />
+                    <TextBox Width="100" Height="30" FontSize="17" Text="{Binding CurrentContainerUc1.Pass}" />
                     <Button Content="Журнал" Width="100" Height="30" Margin="3" FontSize="14" />
-                    <Label Content="READY" Margin="30" Foreground="#FF236410" FontStyle="Italic" FontWeight="Bold" />
+                    <Label Content="READY" Margin="0" Foreground="#FF236410" FontStyle="Italic" FontWeight="Bold" />
                 </WrapPanel>
             </TabItem>
 
             <TabItem Header="Настройки">
-                <StackPanel Margin="9">
-                    <CheckBox Margin="3" Content="Включить инициализацию" IsChecked="{Binding IsSelectedInitEToken}" />
-                    <CheckBox Margin="3" Content="Включить принтер" IsChecked="{Binding IsSelectedPrinter}" />
-                    <ComboBox Width="169" Margin="3" IsEnabled="{Binding IsSelectedPrinter}"
-                              ItemsSource="{Binding PrintersEnumerable}" />
-                    <ComboBox Width="169" Margin="3" IsEnabled="{Binding IsSelectedPrinter}" />
+                <StackPanel Margin="4">
+                    <CheckBox Margin="1" Content="Включить инициализацию" IsChecked="{Binding IsSelectedInitEToken}" />
+                    <CheckBox Margin="1" Content="Включить принтер" IsChecked="{Binding IsSelectedPrinter}" />
+                    <ComboBox Width="169" Margin="1" IsEnabled="{Binding IsSelectedPrinter}"
+						ItemsSource="{Binding PrintersEnumerable}" />
+                    <ComboBox Width="169" Margin="1" IsEnabled="{Binding IsSelectedPrinter}" ItemsSource="{Binding LabelsEnumerable}" />
                 </StackPanel>
             </TabItem>
 
@@ -63,17 +69,23 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel VerticalAlignment="Center">
-                        <Button Margin="5" Content="Добавить"></Button>
-                        <Button Margin="5" Content="Просмотр"></Button>
+                        <Button Margin="5" Content="Добавить" Command="{Binding AddExceptionKey}"/>
+                        <Button Margin="5" Content="Просмотр" Command="{Binding OpenFileExceptionKeys}"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                         <Label Content="Перечень ключей оператора" />
-                        <Label></Label>
+                        <Label  VerticalAlignment="Center"  HorizontalAlignment="Center" Content="{Binding ExceptionKeys, Mode=OneWay}"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
 
         </TabControl>
-
+        <StatusBar Grid.Row="1"
+            >
+            <TextBlock/>
+            <StatusBarItem HorizontalAlignment="Right">
+                <ResizeGrip Opacity="0.75" />
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>

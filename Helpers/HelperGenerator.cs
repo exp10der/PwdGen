@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace PwdGen.Helpers
@@ -8,7 +7,6 @@ namespace PwdGen.Helpers
     class HelperGenerator
     {
         // Если файлов нету то стартуем с этих значений
-        // TODO : Уточнить дефолтныйе номера у Владимира
         private static string IdDefaultUc1 = "СЗ-0000";
         private static string IdDefaultUc3 = "СЗИ-0000";
 
@@ -65,12 +63,10 @@ namespace PwdGen.Helpers
         }
 
         #endregion
-
         public string GetData()
         {
             return DateTime.Today.ToShortDateString();
         }
-
         // Может стоит сделать конструктор если файла xml нету то ставим дефолт 
         // А текущии значения брать через свойства?
         // А может лучше передать сам объект куррентУц1 или Уц3?
