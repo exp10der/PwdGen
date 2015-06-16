@@ -1,11 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Xml.Linq;
-using PwdGen.Model;
+﻿using PwdGen.Model;
 
 namespace PwdGen.Infrastructure
 {
-    interface IFileManager
+    internal interface IFileManager
     {
         void Save(Container container, string path);
         Container Load(string path);

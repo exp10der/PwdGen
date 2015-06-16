@@ -10,7 +10,7 @@ namespace PwdGen.Helpers
     class HelperPrinter
     {
 
-       static IMessageService message= new MessageServicece();
+        static readonly IMessageService Message = new MessageServicece();
         private static ILabel _label;
 
         // TODO : документация http://www.labelwriter.com/software/dls/sdk/docs/DYMOLabelFrameworkdotNETHelp/Index.html
@@ -24,7 +24,8 @@ namespace PwdGen.Helpers
             }
             catch (Exception)
             {
-                message.ShowError("Обнаружена ошибка при обращении к драйверам DYMO. \nПереустановите или Обновите ПО для принтера DYMO");
+                
+                Message.ShowError("Обнаружена ошибка при обращении к драйверам DYMO. \nПереустановите или Обновите ПО для принтера DYMO");
             }
             return null;
         }
