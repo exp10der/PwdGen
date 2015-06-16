@@ -42,7 +42,7 @@ namespace PwdGen.Helpers
             data["Options"][nameParam] = val == State.On
                 ? data["Options"][nameParam] = "true"
                 : data["Options"][nameParam] = "false";
-            parser.WriteFile("config.ini", data, Encoding.UTF8);
+            parser.WriteFile(PathConfigurationFile, data, Encoding.UTF8);
         }
     }
 }

@@ -3,7 +3,7 @@ using PwdGen.Infrastructure;
 
 namespace PwdGen.Model
 {
-    public class MessageServicece : IMessageService
+    public class MessageService : IMessageService
     {
         public void ShowMessage(string message)
         {

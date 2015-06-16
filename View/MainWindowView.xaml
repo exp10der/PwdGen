@@ -23,7 +23,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition />
             <RowDefinition Height="24" />
         </Grid.RowDefinitions>
 
@@ -32,13 +32,13 @@
             <TabItem Header="Инициализация">
                 <WrapPanel Margin="9" HorizontalAlignment="Center">
                     <Button Margin="3" Width="100" Height="30" Content="Старт" FontSize="14"
-                            Command="{Binding StartUc}" CommandParameter="uc_2_history\" />
-                    <TextBox Width="100" x:Name="UC3" Height="30" FontSize="17"
-                             Text="{Binding CurrentContainerUc3.Id}" />
-                    <TextBox Width="100" Height="30" FontSize="17" Text="{Binding CurrentContainerUc3.Pass}" />
+                            Command="{Binding Init}" CommandParameter="uc_2_history\"
+                            IsEnabled="{Binding IsAvailability}" />
+                    <TextBox Width="100" Height="30" FontSize="17"
+                             Text="{Binding CurrentContainerUc.Id}" />
+                    <TextBox Width="100" Height="30" FontSize="17" Text="{Binding CurrentContainerUc.Pass}" />
                     <Button Content="Журнал" Width="100" Height="30" Margin="3" FontSize="14"
                             Command="{Binding OpenHistory}" CommandParameter="uc_2_history/UC.txt" />
-                    <!--<Label Content="READY" Margin="0" Foreground="#FF236410" FontStyle="Italic" FontWeight="Bold" />-->
                 </WrapPanel>
             </TabItem>
             <TabItem Header="Настройки">
@@ -46,9 +46,11 @@
                     <CheckBox Margin="1" Content="Включить инициализацию" IsChecked="{Binding IsSelectedInitEToken}" />
                     <CheckBox Margin="1" Content="Включить принтер" IsChecked="{Binding IsSelectedPrinter}" />
                     <ComboBox Width="169" Margin="1" IsEnabled="{Binding IsSelectedPrinter}"
-                              ItemsSource="{Binding PrintersEnumerable}" />
+                              ItemsSource="{Binding PrintersEnumerable}"
+                              SelectedItem="{Binding SelectedNamePrinter, Mode=TwoWay}" />
                     <ComboBox Width="169" Margin="1" IsEnabled="{Binding IsSelectedPrinter}"
-                              ItemsSource="{Binding LabelsEnumerable}" />
+                              ItemsSource="{Binding LabelsEnumerable}"
+                              SelectedItem="{Binding SelectedConfigFile, Mode=TwoWay}" />
                 </StackPanel>
             </TabItem>
 
@@ -60,7 +62,8 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel VerticalAlignment="Center">
-                        <Button Margin="5" Content="Добавить" Command="{Binding AddExceptionKey}" />
+                        <Button Margin="5" Content="Добавить" Command="{Binding AddExceptionKey}"
+                                IsEnabled="{Binding IsAvailability}" />
                         <Button Margin="5" Content="Просмотр" Command="{Binding OpenFileExceptionKeys}" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" HorizontalAlignment="Center">

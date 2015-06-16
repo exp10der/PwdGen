@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PwdGen.Helpers
 {
-    internal class HelperGenerator
+    public class HelperGenerator
     {
         // Если файлов нету то стартуем с этого значения
         private static readonly string IdDefaultUc3 = "СЗИ-0000";
@@ -76,8 +76,7 @@ namespace PwdGen.Helpers
         public string GetPass()
         {
             GenPass();
-            var pass = Convert.ToString(_password);
-            return pass;
+            return _password.ToString();
         }
 
         #endregion

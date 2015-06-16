@@ -1,10 +1,13 @@
-﻿using System;
+﻿//#define EnableConsole
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
 using PwdGen.Helpers;
 using PwdGen.Infrastructure;
 using PwdGen.Model;
@@ -13,100 +16,145 @@ namespace PwdGen.ViewModel
 {
     internal class MainWindowViewModel : ViewModelBase
     {
-        private  bool _canExecute = true;
-        public MainWindowViewModel() : this(new MessageServicece(), new FileManager())
+        public MainWindowViewModel()
+            : this(new MessageService(), new FileManager())
         {
-            FormLoaded = new RelayCommand(path =>
+            #region Загрузка формы
+
+            FormLoaded = new RelayCommand<string>(path =>
             {
-                CurrentContainerUc3 = _fileManager.Load(path + "UC.xml");
-                if (CurrentContainerUc3 != null) return;
+                IsAvailability = true;
+                try
+                {
+                    ExceptionKeys = File.ReadAllText("exception_key.txt");
+                }
+                catch (Exception ex)
+                {
+                    _messageService.ShowError(ex.Message);
+                }
+
+                CurrentContainerUc = _fileManager.Load(path + "UC.xml");
+                if (CurrentContainerUc != null) return;
                 _messageService.ShowExclamation(
                     "Отсутствуют ранее сформированные данные. \nУчетный номер будет установлен в начальное значение.");
-                CurrentContainerUc3 = new Container();
+                CurrentContainerUc = new Container();
             });
+
+            #endregion
 
             #region команды
 
             #region Вкладка Исключения
 
-            OpenFileExceptionKeys = new RelayCommand(_ => Process.Start("exception_key.txt"));
+            OpenFileExceptionKeys = new RelayCommand(() => Process.Start("exception_key.txt"));
 
-            AddExceptionKey = new RelayCommand(_ =>
+            AddExceptionKey = new RelayCommand(() =>
             {
-                _canExecute = false;
-
-                
-                Task.Run(() =>
+#if (EnableConsole)
+                IsAvailability = false;
+                var cmd = new Process
                 {
-                   
-                    var cmd = new Process();
-                    cmd.StartInfo.FileName = "InfoToken.exe";
-                    cmd.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    cmd.EnableRaisingEvents = true;
-                    cmd.Exited += (sender, args) =>
+                    StartInfo =
                     {
-
-                      
-
-                       OnPropertyChanged("ExceptionKeys"); 
-                       
-                    };//OnPropertyChanged("ExceptionKeys");
-                    cmd.Start();
-                }).ContinueWith(__ =>
-                    OnPropertyChanged("ExceptionKeys"));
+                        FileName = "InfoToken.exe",
+                        WindowStyle = ProcessWindowStyle.Hidden
+                    },
+                    EnableRaisingEvents = true
+                };
+                cmd.Exited += (sender, args) =>
+                {
+                    IsAvailability = true;
+                    ExceptionKeys = File.ReadAllText("exception_key.txt");
+                };
+                cmd.Start();
+#endif
             });
-            //, _ => !Process.GetProcessesByName("InfoToken").Any());
 
             #endregion
 
             OpenHistory =
-                new RelayCommand(path => { Process.Start(Path.Combine(Environment.CurrentDirectory, path.ToString())); });
-            StartUc = new RelayCommand(numberUc =>
+                new RelayCommand<string>(path => Process.Start(Path.Combine(Environment.CurrentDirectory, path)));
+
+            Init = new RelayCommand<string>(path =>
             {
-                CurrentContainerUc3 = new Container
+                IsAvailability = false;
+                CurrentContainerUc = new Container
                 {
                     Pass = _helper.GetPass(),
                     Date = _helper.GetData(),
-                    Id = _helper.GetId(_currentContainerUc3.Id)
+                    Id = _helper.GetId(_currentContainerUc.Id)
                 };
-                var arguments = "eToken_SZTLS_" + CurrentContainerUc3.Date + " " + CurrentContainerUc3.Id + " " +
-                                CurrentContainerUc3.Pass;
-                if (HelperSettings.PrintState == State.On)
+#if EnableConsole
+                if (IsSelectedInitEToken)
                 {
-                    Task.Run(() =>
+                    var arguments = "eToken_SZTLS_" + CurrentContainerUc.Date + " " + CurrentContainerUc.Id + " " +
+                                    CurrentContainerUc.Pass;
+                    var cmd = new Process
                     {
-                        var cmd = new Process();
-                        //cmd.StartInfo.FileName = "lol.exe";
-                        cmd.StartInfo.FileName = "SapiInitToken.exe";
-                        cmd.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                        cmd.StartInfo.Arguments = arguments;
-                        cmd.Start();
-                    });
+                        StartInfo =
+                        {
+                            FileName = "SapiInitToken.exe",
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            Arguments = arguments
+                        }
+                    };
+                    cmd.Exited += (sender, args) =>
+                    {
+                        IsAvailability = true;
+                        switch (File.ReadAllText("errorList.txt"))
+                        {
+                            case "1":
+                                _messageService.ShowExclamation("Вставьте eToken для инициализации.");
+                                break;
+                            case "2":
+                                _messageService.ShowExclamation("Не могу открыть файл конфигураци.");
+                                break;
+                            case "3":
+                                _messageService.ShowExclamation("Вставленно больше одного токена для инициализации.");
+                                break;
+                            case "4":
+                                _messageService.ShowExclamation("Вставьте eToken для инициализации.");
+                                break;
+                            case "5":
+                                _messageService.ShowExclamation("Инициализация прошла не удачно.");
+                                break;
+                        }
+                    };
+                    cmd.Start();
                 }
+                if (IsSelectedPrinter)
+                {
+                    try
+                    {
+                        HelperPrinter.Print(CurrentContainerUc.Pass,SelectedNamePrinter,SelectedConfigFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        _messageService.ShowError(ex.Message);
+                    }
+                    return;
+                }
+#else
+                IsAvailability = true;
+#endif
 
-                _fileManager.Save(CurrentContainerUc3, numberUc + "UC.xml");
-                _fileManager.SaveHistory(CurrentContainerUc3, numberUc + "UC.txt");
+                _fileManager.Save(CurrentContainerUc, path + "UC.xml");
+                _fileManager.SaveHistory(CurrentContainerUc, path + "UC.txt");
             });
-            //, _ =>
-            //{
-            //    CommandManager.InvalidateRequerySuggested();
-            //    return !Process.GetProcessesByName("lol").Any();
-            //});
 
             #endregion
         }
-
-      
 
         public MainWindowViewModel(IMessageService message, IFileManager file)
         {
             _messageService = message;
             _fileManager = file;
         }
-        #region Переменные
+
+        #region Переменные и свойства
+
         private readonly IMessageService _messageService;
         private readonly IFileManager _fileManager;
-
 
         /// <summary>
         ///     Служебный класс для генерации паролей даты айди
@@ -116,16 +164,12 @@ namespace PwdGen.ViewModel
         /// <summary>
         ///     Последний контейнер для УЦ3
         /// </summary>
-        private Container _currentContainerUc3;
+        private Container _currentContainerUc;
 
-        public Container CurrentContainerUc3
+        public Container CurrentContainerUc
         {
-            get { return _currentContainerUc3; }
-            set
-            {
-                _currentContainerUc3 = value;
-                OnPropertyChanged("CurrentContainerUc3");
-            }
+            get { return _currentContainerUc; }
+            set { Set(() => CurrentContainerUc, ref _currentContainerUc, value); }
         }
 
         private bool _isSelectedInitEToken;
@@ -135,17 +179,13 @@ namespace PwdGen.ViewModel
         /// </summary>
         public bool IsSelectedInitEToken
         {
-            get
-            {
-                _isSelectedInitEToken = HelperSettings.InitEToken == State.On;
-                return _isSelectedInitEToken;
-            }
+            get { return _isSelectedInitEToken = HelperSettings.InitEToken == State.On; }
             set
             {
                 if (_isSelectedInitEToken == value)
                     return;
                 HelperSettings.InitEToken = value ? State.On : State.Off;
-                OnPropertyChanged("IsSelectedInitEToken");
+                Set(() => IsSelectedInitEToken, ref _isSelectedInitEToken, value);
             }
         }
 
@@ -166,7 +206,7 @@ namespace PwdGen.ViewModel
                 if (_isSelectedPrinter == value)
                     return;
                 HelperSettings.PrintState = value ? State.On : State.Off;
-                OnPropertyChanged("IsSelectedPrinter");
+                Set(() => IsSelectedPrinter, ref _isSelectedPrinter, value);
             }
         }
 
@@ -175,7 +215,13 @@ namespace PwdGen.ViewModel
         /// </summary>
         public IEnumerable<string> PrintersEnumerable
         {
-            get { return new[] {"DYMO LabelManagerPnP"}; //HelperPrinter.SetupLabelWriterSelection();
+            get
+            {
+#if enableconsole
+           HelperPrinter.SetupLabelWriterSelection(); 
+#else
+                return new[] {"DYMO LabelManagerPnP"};
+#endif
             }
         }
 
@@ -184,14 +230,41 @@ namespace PwdGen.ViewModel
             get { return Directory.GetFiles(Environment.CurrentDirectory, "*.label").Select(Path.GetFileName); }
         }
 
+        private string _exceptionKeys;
+
         public string ExceptionKeys
         {
-            get { return File.ReadAllText("exception_key.txt"); }
+            get { return _exceptionKeys; }
+            set { Set(() => ExceptionKeys, ref _exceptionKeys, value); }
         }
 
-        #region Переменные команд
+        private bool _isAvailability;
 
-        public ICommand StartUc { get; set; }
+        public bool IsAvailability
+        {
+            get { return _isAvailability; }
+            set { Set(() => IsAvailability, ref _isAvailability, value); }
+        }
+
+        private string _selectedNamePrinter;
+
+        public string SelectedNamePrinter
+        {
+            get { return _selectedNamePrinter; }
+            set { Set(() => SelectedNamePrinter, ref _selectedNamePrinter, value); }
+        }
+
+        private string _selectedConfigFile;
+
+        public string SelectedConfigFile
+        {
+            get { return _selectedConfigFile; }
+            set { Set(() => SelectedConfigFile, ref _selectedConfigFile, value); }
+        }
+
+        #region Команды
+
+        public ICommand Init { get; set; }
         public ICommand OpenFileExceptionKeys { get; set; }
         public ICommand AddExceptionKey { get; set; }
         public ICommand FormLoaded { get; set; }
